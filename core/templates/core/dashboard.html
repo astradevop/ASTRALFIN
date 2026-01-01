@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Welcome Message -->
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold mb-2">Welcome back, {{ user.username }}! 👋</h1>
+        <p class="text-slate-400">Here's what's happening with your money today</p>
+    </div>
+    
+    {% if user.is_account_created and account %}
+        <!-- Account Overview Cards -->
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <!-- Balance Card -->
+            <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-6 backdrop-blur-xl shadow-2xl">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <p class="text-sm text-slate-400 flex items-center gap-2">
+                            <i data-lucide="wallet" class="h-4 w-4"></i>
+                            Available Balance
+                        </p>
+                        <p class="mt-2 text-4xl font-bold bg-gradient-to-r from-teal-400 to-cyan-300 bg-clip-text text-transparent">₹{{ account.balance|floatformat:2 }}</p>
+                    </div>
+                    <div class="h-12 w-12 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-400 flex items-center justify-center text-slate-900 shadow-lg">
+                        <i data-lucide="trending-up" class="h-6 w-6"></i>
+                    </div>
+                </div>
+                <a href="{% url 'banking:view_balance' %}" class="text-sm text-teal-400 hover:text-teal-300 flex items-center gap-1">
+                    View Details <i data-lucide="arrow-right" class="h-3 w-3"></i>
+                </a>
+            </div>
+            
+            <!-- Account Number Card -->
+            <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-6 backdrop-blur-xl shadow-2xl">
+                <p class="text-sm text-slate-400 mb-2 flex items-center gap-2">
+                    <i data-lucide="credit-card" class="h-4 w-4"></i>
+                    Account Number
+                </p>
+                <p class="text-2xl font-bold text-white mb-1">{{ account.account_number }}</p>
+                <p class="text-sm text-slate-400">IFSC: <span class="text-cyan-400">{{ account.ifsc_code }}</span></p>
+            </div>
+            
+            <!-- Customer ID Card -->
+            <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-6 backdrop-blur-xl shadow-2xl">
+                <p class="text-sm text-slate-400 mb-2 flex items-center gap-2">
+                    <i data-lucide="user-circle" class="h-4 w-4"></i>
+                    Customer ID
+                </p>
+                <p class="text-2xl font-bold text-white mb-1">{{ account.customer_id }}</p>
+                <p class="text-sm">
+                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs {% if account.account_status == 'Active' %}bg-emerald-500/20 text-emerald-300 border border-emerald-400/30{% else %}bg-yellow-500/20 text-yellow-300 border border-yellow-400/30{% endif %}">
+                        <span class="h-1.5 w-1.5 rounded-full {% if account.account_status == 'Active' %}bg-emerald-400{% else %}bg-yellow-400{% endif %} animate-pulse"></span>
+                        {{ account.account_status }}
+                    </span>
+                </p>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-8 backdrop-blur-xl shadow-2xl mb-8">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                <i data-lucide="zap" class="h-6 w-6 text-teal-400"></i>
+                Quick Actions
+            </h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <a href="{% url 'transactions:add_money' %}" class="group feature-card rounded-2xl p-6 text-center transition-all duration-300">
+                    <div class="h-16 w-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="plus-circle" class="h-8 w-8"></i>
+                    </div>
+                    <span class="font-semibold text-white group-hover:text-emerald-300 transition-colors">Add Money</span>
+                    <p class="text-xs text-slate-400 mt-1">Top up your account</p>
+                </a>
+                
+                <a href="{% url 'transactions:transfer_money' %}" class="group feature-card rounded-2xl p-6 text-center transition-all duration-300">
+                    <div class="h-16 w-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="send" class="h-8 w-8"></i>
+                    </div>
+                    <span class="font-semibold text-white group-hover:text-cyan-300 transition-colors">Transfer Money</span>
+                    <p class="text-xs text-slate-400 mt-1">Send to anyone</p>
+                </a>
+                
+                <a href="{% url 'transactions:transaction_history' %}" class="group feature-card rounded-2xl p-6 text-center transition-all duration-300">
+                    <div class="h-16 w-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-400 flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="receipt" class="h-8 w-8"></i>
+                    </div>
+                    <span class="font-semibold text-white group-hover:text-purple-300 transition-colors">Transaction History</span>
+                    <p class="text-xs text-slate-400 mt-1">View all transactions</p>
+                </a>
+                
+                <a href="{% url 'loans:apply_loan' %}" class="group feature-card rounded-2xl p-6 text-center transition-all duration-300">
+                    <div class="h-16 w-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-orange-500 to-red-400 flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="landmark" class="h-8 w-8"></i>
+                    </div>
+                    <span class="font-semibold text-white group-hover:text-orange-300 transition-colors">Apply for Loan</span>
+                    <p class="text-xs text-slate-400 mt-1">Quick approval</p>
+                </a>
+                
+                <a href="{% url 'investments:investment_dashboard' %}" class="group feature-card rounded-2xl p-6 text-center transition-all duration-300">
+                    <div class="h-16 w-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-400 flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="trending-up" class="h-8 w-8"></i>
+                    </div>
+                    <span class="font-semibold text-white group-hover:text-teal-300 transition-colors">Investments</span>
+                    <p class="text-xs text-slate-400 mt-1">Grow your wealth</p>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Account Details -->
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Account Information -->
+            <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-8 backdrop-blur-xl shadow-2xl">
+                <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                    <i data-lucide="user" class="h-5 w-5 text-teal-400"></i>
+                    Account Information
+                </h2>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center pb-3 border-b border-white/5">
+                        <span class="text-slate-400 text-sm">Account Holder</span>
+                        <span class="font-medium text-white">{{ account.account_holder_name }}</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-3 border-b border-white/5">
+                        <span class="text-slate-400 text-sm">Opened Date</span>
+                        <span class="font-medium text-white">{{ account.opened_date|date:"d M, Y" }}</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-3 border-b border-white/5">
+                        <span class="text-slate-400 text-sm">Email</span>
+                        <span class="font-medium text-white">{{ user.email }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 text-sm">Phone Number</span>
+                        <span class="font-medium text-white">{{ account.phone_number|default:"Not provided" }}</span>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <a href="{% url 'banking:account_details' %}" class="text-teal-400 hover:text-teal-300 font-medium flex items-center gap-2">
+                        View Full Details <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Services -->
+            <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-8 backdrop-blur-xl shadow-2xl">
+                <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                    <i data-lucide="layers" class="h-5 w-5 text-teal-400"></i>
+                    Banking Services
+                </h2>
+                <div class="space-y-3">
+                    <a href="{% url 'transactions:statement' %}" class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-teal-500/30 transition-all duration-300 group">
+                        <span class="flex items-center gap-3">
+                            <i data-lucide="file-text" class="h-5 w-5 text-cyan-400"></i>
+                            <span class="text-white group-hover:text-teal-300">Get Statement</span>
+                        </span>
+                        <i data-lucide="chevron-right" class="h-5 w-5 text-slate-400 group-hover:text-teal-400 group-hover:translate-x-1 transition-all"></i>
+                    </a>
+                    
+                    <a href="{% url 'loans:loan_status' %}" class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-teal-500/30 transition-all duration-300 group">
+                        <span class="flex items-center gap-3">
+                            <i data-lucide="briefcase" class="h-5 w-5 text-purple-400"></i>
+                            <span class="text-white group-hover:text-teal-300">My Loans</span>
+                        </span>
+                        <i data-lucide="chevron-right" class="h-5 w-5 text-slate-400 group-hover:text-teal-400 group-hover:translate-x-1 transition-all"></i>
+                    </a>
+                    
+                    <a href="{% url 'investments:investment_dashboard' %}" class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-teal-500/30 transition-all duration-300 group">
+                        <span class="flex items-center gap-3">
+                            <i data-lucide="trending-up" class="h-5 w-5 text-teal-400"></i>
+                            <span class="text-white group-hover:text-teal-300">My Investments</span>
+                        </span>
+                        <i data-lucide="chevron-right" class="h-5 w-5 text-slate-400 group-hover:text-teal-400 group-hover:translate-x-1 transition-all"></i>
+                    </a>
+                    
+                    <a href="{% url 'banking:view_balance' %}" class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-teal-500/30 transition-all duration-300 group">
+                        <span class="flex items-center gap-3">
+                            <i data-lucide="eye" class="h-5 w-5 text-emerald-400"></i>
+                            <span class="text-white group-hover:text-teal-300">View Balance</span>
+                        </span>
+                        <i data-lucide="chevron-right" class="h-5 w-5 text-slate-400 group-hover:text-teal-400 group-hover:translate-x-1 transition-all"></i>
+                    </a>
+                    
+                    <a href="{% url 'banking:update_profile' %}" class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-teal-500/30 transition-all duration-300 group">
+                        <span class="flex items-center gap-3">
+                            <i data-lucide="edit" class="h-5 w-5 text-orange-400"></i>
+                            <span class="text-white group-hover:text-teal-300">Update Profile</span>
+                        </span>
+                        <i data-lucide="chevron-right" class="h-5 w-5 text-slate-400 group-hover:text-teal-400 group-hover:translate-x-1 transition-all"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+    {% else %}
+        <!-- No Account Created -->
+        <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-12 backdrop-blur-xl shadow-2xl text-center">
+            <div class="h-24 w-24 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-teal-500 to-cyan-400 flex items-center justify-center text-white shadow-2xl">
+                <i data-lucide="wallet" class="h-12 w-12"></i>
+            </div>
+            <h2 class="text-3xl font-bold mb-4">Create Your Bank Account</h2>
+            <p class="text-slate-300 mb-8 max-w-md mx-auto">You're almost there! Create your bank account to start using all our banking services and features.</p>
+            
+            <div class="bg-teal-500/10 border border-teal-500/30 rounded-2xl p-6 mb-8 max-w-md mx-auto">
+                <h3 class="font-semibold text-teal-300 mb-3 flex items-center justify-center gap-2">
+                    <i data-lucide="sparkles" class="h-5 w-5"></i>
+                    What you'll get:
+                </h3>
+                <ul class="text-sm text-slate-300 space-y-2">
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="h-4 w-4 text-teal-400"></i> Unique 5-digit Customer ID</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="h-4 w-4 text-teal-400"></i> 10-digit Account Number</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="h-4 w-4 text-teal-400"></i> IFSC Code: NEOBANKX</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="h-4 w-4 text-teal-400"></i> Instant account activation</li>
+                </ul>
+            </div>
+            
+            <a href="{% url 'banking:create_account' %}" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-900 font-bold shadow-2xl shadow-teal-900/30 hover:shadow-teal-900/50 transition-all duration-300 transform hover:scale-105">
+                <i data-lucide="plus-circle" class="h-5 w-5"></i>
+                Create Account Now
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

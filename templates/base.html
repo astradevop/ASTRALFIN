@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ASTRALFIN - Neo Bank{% endblock %}</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        html {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        .glass {
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .card-hover {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.05);
+        }
+        .feature-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .feature-card:hover {
+            background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+            border: 1px solid rgba(20, 184, 166, 0.3);
+            transform: translateY(-8px);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .blob {
+            animation: float 6s ease-in-out infinite;
+            filter: blur(2px);
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+    
+    <!-- Navigation Bar -->
+    <header class="relative border-b border-white/5">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+            <div class="blob absolute -top-24 -left-24 w-80 h-80 rounded-full bg-teal-600/30"></div>
+            <div class="blob absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-cyan-500/20" style="animation-delay: -3s"></div>
+        </div>
+
+        <nav class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-cyan-400 text-slate-900 font-black">A</span>
+                <span class="text-lg font-semibold tracking-tight">ASTRALFIN</span>
+            </a>
+            
+            {% if user.is_authenticated %}
+                <div class="hidden md:flex items-center gap-6 text-sm text-slate-300">
+                    <a href="{% url 'core:dashboard' %}" class="hover:text-white flex items-center gap-2">
+                        <i data-lucide="layout-dashboard" class="h-4 w-4"></i> Dashboard
+                    </a>
+                    {% if user.is_account_created %}
+                        <a href="{% url 'banking:account_details' %}" class="hover:text-white flex items-center gap-2">
+                            <i data-lucide="user-circle" class="h-4 w-4"></i> Account
+                        </a>
+                    <a href="{% url 'transactions:transaction_history' %}" class="hover:text-white flex items-center gap-2">
+                        <i data-lucide="receipt" class="h-4 w-4"></i> History
+                    </a>
+                    <a href="{% url 'loans:loan_status' %}" class="hover:text-white flex items-center gap-2">
+                        <i data-lucide="landmark" class="h-4 w-4"></i> Loans
+                    </a>
+                    <a href="{% url 'investments:investment_dashboard' %}" class="hover:text-white flex items-center gap-2">
+                        <i data-lucide="trending-up" class="h-4 w-4"></i> Investments
+                    </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+            <div class="hidden md:flex items-center gap-3">
+                {% if user.is_authenticated %}
+                    <span class="text-sm text-slate-300">{{ user.username }}</span>
+                    {% if not user.is_account_created %}
+                        <a href="{% url 'banking:create_account' %}" class="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-900 font-semibold hover:from-teal-400 hover:to-cyan-300 flex items-center gap-2">
+                            <i data-lucide="plus-circle" class="h-4 w-4"></i> Create Account
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'accounts:logout' %}" class="px-4 py-2 rounded-xl border border-slate-700/70 hover:border-teal-500/50 hover:bg-teal-500/5 flex items-center gap-2">
+                        <i data-lucide="log-out" class="h-4 w-4"></i> Logout
+                    </a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="px-4 py-2 rounded-xl border border-slate-700/70 hover:border-teal-500/50 hover:bg-teal-500/5">Login</a>
+                    <a href="{% url 'accounts:signup' %}" class="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold">Sign Up</a>
+                {% endif %}
+            </div>
+            
+            <button id="menuBtn" class="md:hidden p-2 rounded-lg border border-slate-700/70">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+        </nav>
+
+        <div id="mobileMenu" class="md:hidden hidden relative z-10 mx-4 rounded-2xl glass p-4 mb-4">
+            <div class="flex flex-col gap-2 text-slate-200">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'core:dashboard' %}" class="px-3 py-2 rounded-lg hover:bg-white/5">Dashboard</a>
+                    {% if user.is_account_created %}
+                        <a href="{% url 'banking:account_details' %}" class="px-3 py-2 rounded-lg hover:bg-white/5">My Account</a>
+                        <a href="{% url 'transactions:transaction_history' %}" class="px-3 py-2 rounded-lg hover:bg-white/5">History</a>
+                        <a href="{% url 'loans:loan_status' %}" class="px-3 py-2 rounded-lg hover:bg-white/5">Loans</a>
+                        <a href="{% url 'investments:investment_dashboard' %}" class="px-3 py-2 rounded-lg hover:bg-white/5">Investments</a>
+                    {% else %}
+                        <a href="{% url 'banking:create_account' %}" class="px-3 py-2 rounded-lg bg-teal-600 text-white">Create Account</a>
+                    {% endif %}
+                    <div class="h-px bg-white/10 my-2"></div>
+                    <a href="{% url 'accounts:logout' %}" class="px-3 py-2 rounded-lg border border-white/10">Logout</a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="px-3 py-2 rounded-lg border border-white/10">Login</a>
+                    <a href="{% url 'accounts:signup' %}" class="px-3 py-2 rounded-lg bg-teal-600 text-white">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-4 max-w-7xl">
+            {% for message in messages %}
+                <div class="{% if message.tags == 'error' %}bg-red-500/10 border border-red-500/30 text-red-300{% elif message.tags == 'success' %}bg-emerald-500/10 border border-emerald-500/30 text-emerald-300{% elif message.tags == 'warning' %}bg-yellow-500/10 border border-yellow-500/30 text-yellow-300{% else %}bg-cyan-500/10 border border-cyan-500/30 text-cyan-300{% endif %} px-4 py-3 rounded-xl relative mb-4 backdrop-blur-sm flex items-center gap-3" role="alert">
+                    {% if message.tags == 'success' %}
+                        <i data-lucide="check-circle" class="h-5 w-5"></i>
+                    {% elif message.tags == 'error' %}
+                        <i data-lucide="alert-circle" class="h-5 w-5"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i data-lucide="alert-triangle" class="h-5 w-5"></i>
+                    {% else %}
+                        <i data-lucide="info" class="h-5 w-5"></i>
+                    {% endif %}
+                    <span class="block sm:inline">{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="mt-auto py-12 border-t border-white/5">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 text-sm">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-cyan-400 text-slate-900 font-black">A</span>
+                        <span class="text-lg font-semibold">ASTRALFIN</span>
+                    </div>
+                    <p class="text-slate-400">&copy; <span id="year"></span> ASTRALFIN Inc.</p>
+                    <p class="text-slate-500 text-xs mt-2">Experience the future of banking</p>
+                </div>
+                <div>
+                    <p class="font-semibold mb-3 text-white">Product</p>
+                    <ul class="space-y-2 text-slate-300">
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'core:dashboard' %}" class="hover:text-white flex items-center gap-2"><i data-lucide="layout-dashboard" class="h-4 w-4"></i> Dashboard</a></li>
+                            {% if user.is_account_created %}
+                                <li><a href="{% url 'banking:account_details' %}" class="hover:text-white flex items-center gap-2"><i data-lucide="user" class="h-4 w-4"></i> My Account</a></li>
+                                <li><a href="{% url 'transactions:transaction_history' %}" class="hover:text-white flex items-center gap-2"><i data-lucide="receipt" class="h-4 w-4"></i> Transactions</a></li>
+                            {% endif %}
+                        {% else %}
+                            <li><a href="{% url 'accounts:signup' %}" class="hover:text-white flex items-center gap-2"><i data-lucide="user-plus" class="h-4 w-4"></i> Sign Up</a></li>
+                            <li><a href="{% url 'accounts:login' %}" class="hover:text-white flex items-center gap-2"><i data-lucide="log-in" class="h-4 w-4"></i> Login</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-semibold mb-3 text-white">Features</p>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-center gap-2"><i data-lucide="zap" class="h-4 w-4"></i> Instant Account</li>
+                        <li class="flex items-center gap-2"><i data-lucide="shield" class="h-4 w-4"></i> Bank Security</li>
+                        <li class="flex items-center gap-2"><i data-lucide="credit-card" class="h-4 w-4"></i> Smart Cards</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-semibold mb-3 text-white">Legal</p>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-center gap-2"><i data-lucide="file-text" class="h-4 w-4"></i> Terms of Service</li>
+                        <li class="flex items-center gap-2"><i data-lucide="shield" class="h-4 w-4"></i> Privacy Policy</li>
+                        <li class="flex items-center gap-2"><i data-lucide="lock" class="h-4 w-4"></i> Security</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Mobile menu toggle
+        const btn = document.getElementById('menuBtn');
+        const menu = document.getElementById('mobileMenu');
+        if (btn) btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+        // Year
+        const yearEl = document.getElementById('year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+    </script>
+    
+    <!-- Lucide icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>lucide.createIcons();</script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+

@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Pay EMI - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-16 px-4">
+    <div class="max-w-3xl mx-auto">
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 mb-6 shadow-lg shadow-teal-500/30">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-teal-400 to-cyan-400 bg-clip-text text-transparent">
+                Pay EMI
+            </h1>
+            <p class="text-slate-400 text-lg">
+                Manual payment for {{ loan.loan_type }} Loan
+            </p>
+        </div>
+
+        <!-- EMI Details Card -->
+        <div class="bg-slate-800/50 backdrop-blur-xl rounded-3xl border border-slate-700/50 shadow-2xl overflow-hidden mb-8">
+            <div class="bg-gradient-to-r from-teal-600/20 to-cyan-600/20 border-b border-slate-700/50 p-6">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    EMI Payment Details
+                </h2>
+            </div>
+
+            <div class="p-8 space-y-6">
+                <!-- EMI Information -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-4 rounded-xl bg-white/5 border border-white/10">
+                        <p class="text-sm text-slate-400 mb-1">EMI Number</p>
+                        <p class="text-2xl font-bold text-teal-400">#{{ next_emi.emi_number }}</p>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-white/5 border border-white/10">
+                        <p class="text-sm text-slate-400 mb-1">Due Date</p>
+                        <p class="text-2xl font-bold text-white">{{ next_emi.due_date|date:"d M, Y" }}</p>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-gradient-to-br from-teal-500/20 to-cyan-500/10 border border-teal-400/30">
+                        <p class="text-sm text-teal-300 mb-1">EMI Amount</p>
+                        <p class="text-3xl font-bold text-white">₹{{ next_emi.emi_amount }}</p>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/10 border border-blue-400/30">
+                        <p class="text-sm text-blue-300 mb-1">Your Balance</p>
+                        <p class="text-3xl font-bold text-white">₹{{ account_balance }}</p>
+                    </div>
+                </div>
+
+                <!-- Balance Check -->
+                {% if account_balance >= next_emi.emi_amount %}
+                    <div class="bg-emerald-500/10 border border-emerald-400/30 rounded-xl p-4">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <div>
+                                <p class="text-emerald-300 font-medium">Sufficient Balance</p>
+                                <p class="text-sm text-slate-400 mt-1">
+                                    Balance after payment: ₹{{ account_balance|add:"-"|add:next_emi.emi_amount|floatformat:2 }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="bg-red-500/10 border border-red-400/30 rounded-xl p-4">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-red-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                            </svg>
+                            <div>
+                                <p class="text-red-300 font-medium">Insufficient Balance</p>
+                                <p class="text-sm text-slate-400 mt-1">
+                                    Please add ₹{{ next_emi.emi_amount|add:"-"|add:account_balance|floatformat:2 }} more to your account
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Payment Form -->
+                <form method="POST" class="pt-6 border-t border-slate-700/50">
+                    {% csrf_token %}
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            {{ form.confirm_payment }}
+                            <label for="{{ form.confirm_payment.id_for_label }}" class="text-white cursor-pointer">
+                                I confirm that I want to pay EMI #{{ next_emi.emi_number }} of ₹{{ next_emi.emi_amount }} from my account
+                            </label>
+                        </div>
+                        
+                        {% if form.confirm_payment.errors %}
+                            <div class="bg-red-500/10 border border-red-400/30 rounded-xl p-3">
+                                {% for error in form.confirm_payment.errors %}
+                                    <p class="text-sm text-red-300">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Info Box -->
+                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mt-6">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                            <div>
+                                <p class="text-sm text-blue-300 font-medium">Payment Information:</p>
+                                <ul class="text-sm text-slate-400 mt-2 space-y-1 list-disc list-inside">
+                                    <li>Amount will be deducted immediately from your account</li>
+                                    <li>Payment is non-refundable</li>
+                                    <li>A transaction record will be created</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                        <button type="submit" class="flex-1 px-8 py-4 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-teal-600 hover:to-cyan-600 transition-all shadow-lg shadow-teal-500/30 hover:shadow-teal-500/50 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed" {% if account_balance < next_emi.emi_amount %}disabled{% endif %}>
+                            <div class="flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Confirm Payment</span>
+                            </div>
+                        </button>
+                        
+                        <a href="{% url 'loans:emi_schedule' loan.id %}" class="flex-1 px-8 py-4 bg-slate-700/50 text-white font-semibold rounded-xl hover:bg-slate-700 transition-all border border-slate-600 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span>Cancel</span>
+                            </div>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Background Elements -->
+<div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+    <div class="absolute top-1/4 -left-20 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+</div>
+{% endblock %}
+
+
+

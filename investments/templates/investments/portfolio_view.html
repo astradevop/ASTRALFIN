@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Investment Portfolio - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-12">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-4xl font-bold mb-2 flex items-center gap-3">
+                <i data-lucide="briefcase" class="h-10 w-10 text-teal-400"></i>
+                Investment Portfolio
+            </h1>
+            <p class="text-slate-400">Complete overview of your investments</p>
+        </div>
+        <a href="{% url 'investments:create_investment' %}" 
+           class="px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-900 font-semibold hover:from-teal-400 hover:to-cyan-300 flex items-center gap-2 transition-all transform hover:scale-105">
+            <i data-lucide="plus-circle" class="h-5 w-5"></i>
+            New Investment
+        </a>
+    </div>
+    
+    <!-- Portfolio Summary -->
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="card-hover rounded-2xl bg-gradient-to-br from-blue-600/20 to-blue-800/20 border border-blue-500/30 p-6">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="h-14 w-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
+                    <i data-lucide="wallet" class="h-7 w-7 text-white"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-blue-300">Total Invested</p>
+                    <p class="text-3xl font-bold text-white">₹{{ total_invested|floatformat:2 }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-hover rounded-2xl bg-gradient-to-br from-green-600/20 to-emerald-800/20 border border-green-500/30 p-6">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="h-14 w-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-400 flex items-center justify-center">
+                    <i data-lucide="dollar-sign" class="h-7 w-7 text-white"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-green-300">Current Value</p>
+                    <p class="text-3xl font-bold text-white">₹{{ total_current|floatformat:2 }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-hover rounded-2xl bg-gradient-to-br from-{% if total_profit >= 0 %}green-600/20 to-emerald-800/20 border-green-500/30{% else %}red-600/20 to-pink-800/20 border-red-500/30{% endif %} p-6">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="h-14 w-14 rounded-xl bg-gradient-to-br from-{% if total_profit >= 0 %}green-500 to-emerald-400{% else %}red-500 to-pink-400{% endif %} flex items-center justify-center">
+                    <i data-lucide="{% if total_profit >= 0 %}trending-up{% else %}trending-down{% endif %}" class="h-7 w-7 text-white"></i>
+                </div>
+                <div>
+                    <p class="text-sm {% if total_profit >= 0 %}text-green-300{% else %}text-red-300{% endif %}">Total Profit/Loss</p>
+                    <p class="text-3xl font-bold {% if total_profit >= 0 %}text-green-400{% else %}text-red-400{% endif %}">
+                        {% if total_profit >= 0 %}+{% endif %}₹{{ total_profit|floatformat:2 }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Investments List -->
+    <div class="rounded-2xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/10 p-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+            <i data-lucide="list" class="h-6 w-6 text-teal-400"></i>
+            All Investments
+        </h2>
+        
+        {% if investments %}
+            <div class="space-y-4">
+                {% for investment in investments %}
+                <a href="{% url 'investments:investment_details' investment.id %}" 
+                   class="block p-6 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-teal-500/30 transition-all card-hover">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="h-14 w-14 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-400 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="{% if investment.investment_type == 'Mutual_Fund' %}bar-chart{% elif investment.investment_type == 'Stocks' %}line-chart{% elif investment.investment_type == 'Bonds' %}shield{% elif investment.investment_type == 'Fixed_Deposit' %}lock{% else %}repeat{% endif %}" class="h-7 w-7 text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-1">{{ investment.investment_name }}</h3>
+                                <div class="flex flex-wrap items-center gap-2 text-sm text-slate-400">
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-white/5">
+                                        <i data-lucide="tag" class="h-3 w-3"></i>
+                                        {{ investment.get_investment_type_display }}
+                                    </span>
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-white/5">
+                                        <i data-lucide="alert-triangle" class="h-3 w-3"></i>
+                                        {{ investment.get_risk_level_display }} Risk
+                                    </span>
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg {% if investment.investment_status == 'Active' %}bg-green-500/10 text-green-400{% elif investment.investment_status == 'Closed' %}bg-red-500/10 text-red-400{% else %}bg-yellow-500/10 text-yellow-400{% endif %}">
+                                        <i data-lucide="circle" class="h-2 w-2 fill-current"></i>
+                                        {{ investment.investment_status }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-6 text-right">
+                            <div>
+                                <p class="text-xs text-slate-400 mb-1">Invested</p>
+                                <p class="text-base font-semibold">₹{{ investment.principal_amount|floatformat:2 }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 mb-1">Current</p>
+                                <p class="text-base font-semibold">₹{{ investment.current_value|floatformat:2 }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 mb-1">Returns</p>
+                                <p class="text-base font-bold {% if investment.profit_loss >= 0 %}text-green-400{% else %}text-red-400{% endif %} flex items-center gap-1 justify-end">
+                                    <i data-lucide="{% if investment.profit_loss >= 0 %}arrow-up{% else %}arrow-down{% endif %}" class="h-4 w-4"></i>
+                                    {% if investment.return_percentage >= 0 %}+{% endif %}{{ investment.return_percentage|floatformat:2 }}%
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-12">
+                <div class="h-20 w-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center">
+                    <i data-lucide="briefcase" class="h-10 w-10 text-slate-400"></i>
+                </div>
+                <p class="text-slate-400 text-lg mb-4">Your portfolio is empty</p>
+                <a href="{% url 'investments:create_investment' %}" 
+                   class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold transition-colors">
+                    <i data-lucide="plus-circle" class="h-5 w-5"></i>
+                    Create Your First Investment
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

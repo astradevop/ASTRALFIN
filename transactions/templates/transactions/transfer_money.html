@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% block title %}Transfer Money - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-12">
+    <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-8 backdrop-blur-xl shadow-2xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="h-20 w-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white shadow-2xl">
+                <i data-lucide="send" class="h-10 w-10"></i>
+            </div>
+            <h1 class="text-4xl font-bold mb-3">Transfer Money</h1>
+            <p class="text-slate-400">Send money to other ASTRALFIN accounts</p>
+        </div>
+        
+        <!-- Current Balance Display -->
+        <div class="card-hover rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-6 mb-8 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent"></div>
+            <div class="relative">
+                <p class="text-sm opacity-90 mb-1 text-white flex items-center justify-center gap-2">
+                    <i data-lucide="wallet" class="h-4 w-4"></i>
+                    Available Balance
+                </p>
+                <p class="text-4xl font-bold text-white">₹{{ user.account.balance|floatformat:2 }}</p>
+            </div>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="mb-8">
+            <div class="flex gap-2 p-1 bg-white/5 rounded-2xl border border-white/10">
+                <button onclick="showTab('mobile')" id="mobile-tab" class="tab-button flex-1 px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-900 font-semibold transition-all duration-300 flex items-center justify-center gap-2">
+                    <i data-lucide="smartphone" class="h-5 w-5"></i>
+                    By Mobile Number
+                </button>
+                <button onclick="showTab('account')" id="account-tab" class="tab-button flex-1 px-6 py-3 rounded-xl text-slate-300 hover:bg-white/5 transition-all duration-300 flex items-center justify-center gap-2">
+                    <i data-lucide="hash" class="h-5 w-5"></i>
+                    By Account Number
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Number Form -->
+        <div id="mobile-form" class="tab-content">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <input type="hidden" name="transfer_method" value="mobile">
+                
+                <div class="space-y-6">
+                    <div>
+                        <label for="{{ mobile_form.phone_number.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                            <i data-lucide="smartphone" class="h-5 w-5 text-teal-400"></i>
+                            {{ mobile_form.phone_number.label }}
+                        </label>
+                        {{ mobile_form.phone_number }}
+                        {% if mobile_form.phone_number.errors %}
+                            <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                                {{ mobile_form.phone_number.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ mobile_form.amount.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                            <i data-lucide="banknote" class="h-5 w-5 text-teal-400"></i>
+                            {{ mobile_form.amount.label }}
+                        </label>
+                        {{ mobile_form.amount }}
+                        {% if mobile_form.amount.errors %}
+                            <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                                {{ mobile_form.amount.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ mobile_form.description.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                            <i data-lucide="message-square" class="h-5 w-5 text-teal-400"></i>
+                            {{ mobile_form.description.label }}
+                        </label>
+                        {{ mobile_form.description }}
+                        {% if mobile_form.description.errors %}
+                            <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                                {{ mobile_form.description.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full mt-6 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold shadow-2xl shadow-blue-900/30 hover:shadow-blue-900/50 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2">
+                    <i data-lucide="send" class="h-6 w-6"></i>
+                    Transfer Money
+                </button>
+            </form>
+        </div>
+        
+        <!-- Account Number Form -->
+        <div id="account-form" class="tab-content hidden">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <input type="hidden" name="transfer_method" value="account">
+                
+                <div class="space-y-6">
+                    <div>
+                        <label for="{{ account_form.account_number.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                            <i data-lucide="hash" class="h-5 w-5 text-teal-400"></i>
+                            {{ account_form.account_number.label }}
+                        </label>
+                        {{ account_form.account_number }}
+                        {% if account_form.account_number.errors %}
+                            <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                                {{ account_form.account_number.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ account_form.ifsc_code.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                            <i data-lucide="building" class="h-5 w-5 text-teal-400"></i>
+                            {{ account_form.ifsc_code.label }}
+                        </label>
+                        {{ account_form.ifsc_code }}
+                        {% if account_form.ifsc_code.errors %}
+                            <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                                {{ account_form.ifsc_code.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ account_form.amount.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                            <i data-lucide="banknote" class="h-5 w-5 text-teal-400"></i>
+                            {{ account_form.amount.label }}
+                        </label>
+                        {{ account_form.amount }}
+                        {% if account_form.amount.errors %}
+                            <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                                {{ account_form.amount.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ account_form.description.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                            <i data-lucide="message-square" class="h-5 w-5 text-teal-400"></i>
+                            {{ account_form.description.label }}
+                        </label>
+                        {{ account_form.description }}
+                        {% if account_form.description.errors %}
+                            <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                                {{ account_form.description.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full mt-6 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold shadow-2xl shadow-blue-900/30 hover:shadow-blue-900/50 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2">
+                    <i data-lucide="send" class="h-6 w-6"></i>
+                    Transfer Money
+                </button>
+            </form>
+        </div>
+        
+        <div class="mt-6 text-center">
+            <a href="{% url 'core:dashboard' %}" class="text-teal-400 hover:text-teal-300 font-medium flex items-center justify-center gap-2">
+                <i data-lucide="arrow-left" class="h-4 w-4"></i>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="text"],
+    input[type="number"] {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        color: white;
+        font-size: 1.125rem;
+        transition: all 0.3s;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(20, 184, 166, 0.5);
+        box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+    }
+    input::placeholder {
+        color: rgb(148, 163, 184);
+    }
+</style>
+
+<script>
+    function showTab(tabName) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.add('hidden');
+        });
+        
+        // Reset all tab buttons
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.classList.remove('bg-gradient-to-r', 'from-teal-500', 'to-cyan-400', 'text-slate-900', 'font-semibold');
+            button.classList.add('text-slate-300');
+        });
+        
+        // Show selected tab content
+        document.getElementById(tabName + '-form').classList.remove('hidden');
+        
+        // Style active tab button
+        const activeTab = document.getElementById(tabName + '-tab');
+        activeTab.classList.add('bg-gradient-to-r', 'from-teal-500', 'to-cyan-400', 'text-slate-900', 'font-semibold');
+        activeTab.classList.remove('text-slate-300');
+    }
+</script>
+{% endblock %}

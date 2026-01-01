@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}Withdraw Investment - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-12">
+    <!-- Back Button -->
+    <div class="mb-6">
+        <a href="{% url 'investments:investment_details' investment.id %}" class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="arrow-left" class="h-4 w-4"></i>
+            Back to Investment Details
+        </a>
+    </div>
+    
+    <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-8 backdrop-blur-xl shadow-2xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="h-20 w-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-red-500 to-pink-400 flex items-center justify-center text-white shadow-2xl">
+                <i data-lucide="trending-down" class="h-10 w-10"></i>
+            </div>
+            <h1 class="text-4xl font-bold mb-3">Withdraw Investment</h1>
+            <p class="text-slate-400">Withdraw funds from {{ investment.investment_name }}</p>
+        </div>
+        
+        <!-- Investment Summary -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="rounded-2xl bg-white/5 border border-white/10 p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
+                        <i data-lucide="wallet" class="h-6 w-6 text-white"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-400">Current Investment Value</p>
+                        <p class="text-2xl font-bold">₹{{ investment.current_value|floatformat:2 }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="rounded-2xl bg-white/5 border border-white/10 p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-400 flex items-center justify-center">
+                        <i data-lucide="trending-up" class="h-6 w-6 text-white"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-400">Your Account Balance</p>
+                        <p class="text-2xl font-bold">₹{{ account_balance|floatformat:2 }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profit/Loss Summary -->
+        <div class="rounded-2xl bg-{% if investment.profit_loss >= 0 %}green-500/10 border-green-500/30{% else %}red-500/10 border-red-500/30{% endif %} border p-6 mb-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-{% if investment.profit_loss >= 0 %}green-500 to-emerald-400{% else %}red-500 to-pink-400{% endif %} flex items-center justify-center">
+                        <i data-lucide="{% if investment.profit_loss >= 0 %}arrow-up{% else %}arrow-down{% endif %}" class="h-6 w-6 text-white"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm {% if investment.profit_loss >= 0 %}text-green-300{% else %}text-red-300{% endif %}">Total Profit/Loss</p>
+                        <p class="text-2xl font-bold {% if investment.profit_loss >= 0 %}text-green-400{% else %}text-red-400{% endif %}">
+                            {% if investment.profit_loss >= 0 %}+{% endif %}₹{{ investment.profit_loss|floatformat:2 }}
+                        </p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-slate-400">Return Percentage</p>
+                    <p class="text-2xl font-bold {% if investment.return_percentage >= 0 %}text-green-400{% else %}text-red-400{% endif %}">
+                        {% if investment.return_percentage >= 0 %}+{% endif %}{{ investment.return_percentage|floatformat:2 }}%
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Withdrawal Form -->
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            <div class="mb-6">
+                <label for="{{ form.withdrawal_amount.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                    <i data-lucide="banknote" class="h-5 w-5 text-teal-400"></i>
+                    {{ form.withdrawal_amount.label }}
+                </label>
+                {{ form.withdrawal_amount }}
+                {% if form.withdrawal_amount.errors %}
+                    <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                        <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                        {{ form.withdrawal_amount.errors.0 }}
+                    </p>
+                {% else %}
+                    <p class="mt-2 text-sm text-slate-400">Maximum withdrawal: ₹{{ investment.current_value|floatformat:2 }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-6 mb-6">
+                <h3 class="font-semibold text-yellow-300 mb-3 flex items-center gap-2">
+                    <i data-lucide="alert-triangle" class="h-5 w-5"></i>
+                    Important Notice
+                </h3>
+                <ul class="text-sm text-slate-300 space-y-2">
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="info" class="h-4 w-4 text-yellow-400 mt-0.5 flex-shrink-0"></i>
+                        <span>Withdrawing funds will reduce your investment value</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="info" class="h-4 w-4 text-yellow-400 mt-0.5 flex-shrink-0"></i>
+                        <span>The amount will be credited to your bank account immediately</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="info" class="h-4 w-4 text-yellow-400 mt-0.5 flex-shrink-0"></i>
+                        <span>If you withdraw the full amount, your investment will be closed</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="mb-6 p-4 rounded-xl bg-white/5 border border-white/10">
+                <label class="flex items-start gap-3 cursor-pointer">
+                    {{ form.confirm_withdrawal }}
+                    <span class="text-sm text-slate-300 pt-0.5">{{ form.confirm_withdrawal.label }}</span>
+                </label>
+                {% if form.confirm_withdrawal.errors %}
+                    <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                        <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                        {{ form.confirm_withdrawal.errors.0 }}
+                    </p>
+                {% endif %}
+            </div>
+            
+            <div class="flex gap-4">
+                <button type="submit" class="flex-1 px-8 py-4 rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold shadow-2xl shadow-red-900/30 hover:shadow-red-900/50 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2">
+                    <i data-lucide="check-circle" class="h-6 w-6"></i>
+                    Confirm Withdrawal
+                </button>
+                
+                <a href="{% url 'investments:investment_details' investment.id %}" 
+                   class="px-8 py-4 rounded-2xl border border-white/20 hover:bg-white/5 text-white font-semibold transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="x-circle" class="h-6 w-6"></i>
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    input[type="number"],
+    input[type="checkbox"] {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        color: white;
+        transition: all 0.3s;
+    }
+    input[type="number"] {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        font-size: 1rem;
+    }
+    input[type="number"]:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(20, 184, 166, 0.5);
+        box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+    }
+</style>
+{% endblock %}
+
+
+
+
+
+

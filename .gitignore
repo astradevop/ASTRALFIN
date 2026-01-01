@@ -1,0 +1,54 @@
+# Python
+*.py[cod]
+*$py.class
+*.so
+.Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+
+# Node / Frontend
+node_modules/
+dist/
+build/
+coverage/
+.npm/
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Private / Configuration
+secret.key
+config.json
+logs/
+tmp/
+celerybeat-schedule
+dump.rdb

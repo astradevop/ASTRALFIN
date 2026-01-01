@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center">
+    <div class="text-center max-w-2xl mx-auto px-4">
+        <!-- Error Icon -->
+        <div class="h-32 w-32 mx-auto mb-8 rounded-3xl bg-gradient-to-br from-red-500/20 to-pink-500/20 border border-red-500/30 flex items-center justify-center">
+            <i data-lucide="alert-circle" class="h-16 w-16 text-red-400"></i>
+        </div>
+        
+        <!-- Error Code -->
+        <h1 class="text-8xl font-black mb-4 bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">
+            404
+        </h1>
+        
+        <!-- Error Message -->
+        <h2 class="text-3xl font-bold mb-4">Page Not Found</h2>
+        <p class="text-slate-400 text-lg mb-8 leading-relaxed">
+            Oops! The page you're looking for doesn't exist. It might have been moved or deleted.
+        </p>
+        
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'core:index' %}" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-900 font-bold shadow-2xl shadow-teal-900/30 hover:shadow-teal-900/50 transition-all duration-300 transform hover:scale-105">
+                <i data-lucide="home" class="h-5 w-5"></i>
+                Go Home
+            </a>
+            
+            {% if user.is_authenticated %}
+            <a href="{% url 'core:dashboard' %}" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl border border-slate-700/70 hover:border-teal-500/50 hover:bg-teal-500/5 text-white font-semibold transition-all duration-300">
+                <i data-lucide="layout-dashboard" class="h-5 w-5"></i>
+                Dashboard
+            </a>
+            {% endif %}
+        </div>
+        
+        <!-- Helpful Links -->
+        <div class="mt-12 p-6 rounded-2xl bg-white/5 border border-white/10">
+            <h3 class="font-semibold mb-4 text-white">Popular Pages</h3>
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                {% if user.is_authenticated and user.is_account_created %}
+                <a href="{% url 'transactions:transfer_money' %}" class="text-slate-400 hover:text-teal-400 flex items-center gap-2">
+                    <i data-lucide="send" class="h-4 w-4"></i>
+                    Transfer Money
+                </a>
+                <a href="{% url 'loans:apply_loan' %}" class="text-slate-400 hover:text-teal-400 flex items-center gap-2">
+                    <i data-lucide="landmark" class="h-4 w-4"></i>
+                    Apply for Loan
+                </a>
+                <a href="{% url 'investments:investment_dashboard' %}" class="text-slate-400 hover:text-teal-400 flex items-center gap-2">
+                    <i data-lucide="trending-up" class="h-4 w-4"></i>
+                    Investments
+                </a>
+                {% else %}
+                <a href="{% url 'accounts:signup' %}" class="text-slate-400 hover:text-teal-400 flex items-center gap-2">
+                    <i data-lucide="user-plus" class="h-4 w-4"></i>
+                    Sign Up
+                </a>
+                <a href="{% url 'accounts:login' %}" class="text-slate-400 hover:text-teal-400 flex items-center gap-2">
+                    <i data-lucide="log-in" class="h-4 w-4"></i>
+                    Login
+                </a>
+                <a href="{% url 'core:index' %}" class="text-slate-400 hover:text-teal-400 flex items-center gap-2">
+                    <i data-lucide="info" class="h-4 w-4"></i>
+                    About Us
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+

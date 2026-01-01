@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% block title %}EMI Schedule - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-16 px-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 mb-6 shadow-lg shadow-teal-500/30">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-teal-400 to-cyan-400 bg-clip-text text-transparent">
+                EMI Schedule
+            </h1>
+            <p class="text-slate-400 text-lg">
+                {{ loan.loan_type }} Loan - Manage your monthly payments
+            </p>
+        </div>
+
+        <!-- Loan Summary Cards -->
+        <div class="grid md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-teal-500/20 to-cyan-500/10 backdrop-blur-xl rounded-2xl border border-teal-400/30 p-6">
+                <p class="text-sm text-teal-300 mb-2">Loan Amount</p>
+                <p class="text-3xl font-bold text-white">₹{{ loan.loan_amount }}</p>
+            </div>
+            
+            <div class="bg-gradient-to-br from-blue-500/20 to-indigo-500/10 backdrop-blur-xl rounded-2xl border border-blue-400/30 p-6">
+                <p class="text-sm text-blue-300 mb-2">Monthly EMI</p>
+                <p class="text-3xl font-bold text-white">₹{{ loan.monthly_emi }}</p>
+            </div>
+            
+            <div class="bg-gradient-to-br from-purple-500/20 to-pink-500/10 backdrop-blur-xl rounded-2xl border border-purple-400/30 p-6">
+                <p class="text-sm text-purple-300 mb-2">Remaining Balance</p>
+                <p class="text-3xl font-bold text-white">₹{{ loan.remaining_balance }}</p>
+            </div>
+            
+            <div class="bg-gradient-to-br from-emerald-500/20 to-green-500/10 backdrop-blur-xl rounded-2xl border border-emerald-400/30 p-6">
+                <p class="text-sm text-emerald-300 mb-2">EMIs Paid</p>
+                <p class="text-3xl font-bold text-white">{{ loan.paid_emis_count }}/{{ loan.tenure_months }}</p>
+            </div>
+        </div>
+
+        <!-- Autopay Status & Quick Actions -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <!-- Autopay Status -->
+            <div class="bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-white flex items-center gap-2">
+                        <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Autopay Status
+                    </h3>
+                    {% if loan.autopay_enabled %}
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-sm font-medium">
+                            Enabled
+                        </span>
+                    {% else %}
+                        <span class="px-3 py-1 rounded-full bg-slate-500/20 text-slate-300 border border-slate-400/30 text-sm font-medium">
+                            Disabled
+                        </span>
+                    {% endif %}
+                </div>
+                <p class="text-slate-400 text-sm mb-4">
+                    {% if loan.autopay_enabled %}
+                        EMIs will be automatically deducted from your account on due dates.
+                    {% else %}
+                        You need to pay EMIs manually before the due date.
+                    {% endif %}
+                </p>
+                <a href="{% url 'loans:toggle_autopay' loan.id %}" class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-teal-600 hover:to-cyan-600 transition-all shadow-lg shadow-teal-500/30">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {% if loan.autopay_enabled %}Disable{% else %}Enable{% endif %} Autopay
+                </a>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6">
+                <h3 class="text-xl font-semibold text-white flex items-center gap-2 mb-4">
+                    <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Quick Actions
+                </h3>
+                <div class="space-y-3">
+                    <a href="{% url 'loans:pay_emi_manual' loan.id %}" class="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-cyan-500/30 transition-all group">
+                        <span class="text-white group-hover:text-cyan-300 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            Pay Next EMI
+                        </span>
+                        <svg class="w-5 h-5 text-slate-400 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                    
+                    <a href="{% url 'loans:preclose_loan' loan.id %}" class="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-purple-500/30 transition-all group">
+                        <span class="text-white group-hover:text-purple-300 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Preclose Loan
+                        </span>
+                        <svg class="w-5 h-5 text-slate-400 group-hover:text-purple-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMI Schedule Table -->
+        <div class="bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden">
+            <div class="p-6 border-b border-slate-700/50">
+                <h3 class="text-2xl font-semibold text-white flex items-center gap-2">
+                    <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                    Payment Schedule
+                </h3>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-slate-900/50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">EMI #</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Due Date</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">EMI Amount</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Payment Date</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Method</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/50">
+                        {% for emi in emi_payments %}
+                        <tr class="hover:bg-slate-700/20 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                                #{{ emi.emi_number }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">
+                                {{ emi.due_date|date:"d M, Y" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-white">
+                                ₹{{ emi.emi_amount }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if emi.payment_status == 'Paid' %}
+                                    <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-medium">
+                                        ✓ Paid
+                                    </span>
+                                {% elif emi.payment_status == 'Pending' %}
+                                    <span class="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-400/30 text-xs font-medium">
+                                        ⏳ Pending
+                                    </span>
+                                {% elif emi.payment_status == 'Overdue' %}
+                                    <span class="px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-400/30 text-xs font-medium">
+                                        ⚠️ Overdue
+                                    </span>
+                                {% else %}
+                                    <span class="px-3 py-1 rounded-full bg-slate-500/20 text-slate-300 border border-slate-400/30 text-xs font-medium">
+                                        {{ emi.payment_status }}
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">
+                                {% if emi.payment_date %}
+                                    {{ emi.payment_date|date:"d M, Y" }}
+                                {% else %}
+                                    <span class="text-slate-500">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">
+                                {% if emi.payment_method %}
+                                    <span class="px-2 py-1 rounded-md bg-slate-700/50 text-xs">
+                                        {{ emi.get_payment_method_display }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-slate-500">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="mt-8 text-center">
+            <a href="{% url 'loans:loan_details' loan.id %}" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-700/50 text-white font-semibold rounded-xl hover:bg-slate-700 transition-all border border-slate-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Loan Details
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Background Elements -->
+<div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+    <div class="absolute top-1/4 -left-20 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+</div>
+{% endblock %}
+
+
+

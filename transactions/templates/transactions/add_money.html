@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Money - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-12">
+    <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-8 backdrop-blur-xl shadow-2xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="h-20 w-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-2xl">
+                <i data-lucide="plus-circle" class="h-10 w-10"></i>
+            </div>
+            <h1 class="text-4xl font-bold mb-3">Add Money</h1>
+            <p class="text-slate-400">Top up your ASTRALFIN account</p>
+        </div>
+        
+        <!-- Current Balance Display -->
+        <div class="card-hover rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 p-8 mb-8 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent"></div>
+            <div class="relative">
+                <p class="text-sm opacity-90 mb-1 text-white flex items-center justify-center gap-2">
+                    <i data-lucide="wallet" class="h-4 w-4"></i>
+                    Current Balance
+                </p>
+                <p class="text-5xl font-bold text-white">₹{{ user.account.balance|floatformat:2 }}</p>
+            </div>
+        </div>
+        
+        <!-- Form -->
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            <div class="space-y-6">
+                <div>
+                    <label for="{{ form.amount.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                        <i data-lucide="banknote" class="h-5 w-5 text-teal-400"></i>
+                        {{ form.amount.label }}
+                    </label>
+                    {{ form.amount }}
+                    {% if form.amount.errors %}
+                        <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                            <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                            {{ form.amount.errors.0 }}
+                        </p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                        <i data-lucide="message-square" class="h-5 w-5 text-teal-400"></i>
+                        {{ form.description.label }}
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                            <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                            {{ form.description.errors.0 }}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="bg-cyan-500/10 border border-cyan-500/30 rounded-2xl p-6 my-6">
+                <p class="text-sm text-cyan-300 flex items-center gap-2">
+                    <i data-lucide="info" class="h-5 w-5"></i>
+                    <strong>Note:</strong> This is a demo feature. In a real banking app, this would integrate with payment gateways for secure transactions.
+                </p>
+            </div>
+            
+            <button type="submit" class="w-full px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 text-white font-bold shadow-2xl shadow-emerald-900/30 hover:shadow-emerald-900/50 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2">
+                <i data-lucide="check-circle" class="h-6 w-6"></i>
+                Add Money to Account
+            </button>
+        </form>
+        
+        <div class="mt-6 text-center">
+            <a href="{% url 'core:dashboard' %}" class="text-teal-400 hover:text-teal-300 font-medium flex items-center justify-center gap-2">
+                <i data-lucide="arrow-left" class="h-4 w-4"></i>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="number"],
+    input[type="text"] {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        color: white;
+        font-size: 1.125rem;
+        transition: all 0.3s;
+    }
+    input[type="number"]:focus,
+    input[type="text"]:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(20, 184, 166, 0.5);
+        box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+    }
+    input::placeholder {
+        color: rgb(148, 163, 184);
+    }
+</style>
+{% endblock %}

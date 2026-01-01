@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Toggle Autopay - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-16 px-4">
+    <div class="max-w-2xl mx-auto">
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 mb-6 shadow-lg shadow-teal-500/30">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-teal-400 to-cyan-400 bg-clip-text text-transparent">
+                Autopay Settings
+            </h1>
+            <p class="text-slate-400 text-lg">Manage automatic EMI payment</p>
+        </div>
+
+        <div class="bg-slate-800/50 backdrop-blur-xl rounded-3xl border border-slate-700/50 shadow-2xl p-8">
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4 p-6 rounded-xl bg-white/5 border border-white/10">
+                        {{ form.autopay_enabled }}
+                        <div class="flex-1">
+                            <label for="{{ form.autopay_enabled.id_for_label }}" class="text-lg font-semibold text-white cursor-pointer block mb-2">
+                                Enable Automatic EMI Payment
+                            </label>
+                            <p class="text-sm text-slate-400">
+                                When enabled, your EMI will be automatically deducted from your account balance on the due date each month.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                            <div>
+                                <p class="text-sm text-blue-300 font-medium">Important Notes:</p>
+                                <ul class="text-sm text-slate-400 mt-2 space-y-1 list-disc list-inside">
+                                    <li>Ensure sufficient balance on due dates</li>
+                                    <li>Payment fails if balance is insufficient</li>
+                                    <li>You can disable autopay anytime</li>
+                                    <li>Manual payment is always available</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 mt-8">
+                    <button type="submit" class="flex-1 px-8 py-4 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-teal-600 hover:to-cyan-600 transition-all shadow-lg shadow-teal-500/30">
+                        Save Settings
+                    </button>
+                    <a href="{% url 'loans:emi_schedule' loan.id %}" class="flex-1 px-8 py-4 bg-slate-700/50 text-white font-semibold rounded-xl hover:bg-slate-700 transition-all border border-slate-600 text-center">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+

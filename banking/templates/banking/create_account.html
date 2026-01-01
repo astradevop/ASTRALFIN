@@ -1,0 +1,313 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Bank Account - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto py-12">
+    <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-8 backdrop-blur-xl shadow-2xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="h-20 w-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-teal-500 to-cyan-400 flex items-center justify-center text-white shadow-2xl">
+                <i data-lucide="wallet" class="h-10 w-10"></i>
+            </div>
+            <h1 class="text-4xl font-bold mb-3">Create Your Bank Account</h1>
+            <p class="text-slate-400">Fill in your details to get started</p>
+        </div>
+        
+        <!-- Features Grid -->
+        <div class="grid md:grid-cols-2 gap-4 mb-8">
+            <div class="feature-card rounded-2xl p-5 group">
+                <div class="flex items-center gap-3">
+                    <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
+                        <i data-lucide="hash" class="h-6 w-6"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-white">Unique Customer ID</p>
+                        <p class="text-xs text-slate-400">Auto-generated 5-digit ID</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-card rounded-2xl p-5 group">
+                <div class="flex items-center gap-3">
+                    <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
+                        <i data-lucide="credit-card" class="h-6 w-6"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-white">Account Number</p>
+                        <p class="text-xs text-slate-400">10-digit unique account</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-card rounded-2xl p-5 group">
+                <div class="flex items-center gap-3">
+                    <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-400 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
+                        <i data-lucide="shield-check" class="h-6 w-6"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-white">Secure & Safe</p>
+                        <p class="text-xs text-slate-400">Bank-level security</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-card rounded-2xl p-5 group">
+                <div class="flex items-center gap-3">
+                    <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-400 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
+                        <i data-lucide="zap" class="h-6 w-6"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-white">Instant Activation</p>
+                        <p class="text-xs text-slate-400">Start banking immediately</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form -->
+        <form method="post" novalidate class="mt-8">
+            {% csrf_token %}
+            
+            <!-- Personal Information Section -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2 text-white">
+                    <i data-lucide="user" class="h-6 w-6 text-teal-400"></i>
+                    Personal Information
+                </h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Full Name -->
+                    <div>
+                        <label for="{{ form.account_holder_name.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                            <i data-lucide="user" class="h-4 w-4 text-teal-400"></i>
+                            {{ form.account_holder_name.label }}
+                        </label>
+                        {{ form.account_holder_name }}
+                        {% if form.account_holder_name.errors %}
+                            <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                                {{ form.account_holder_name.errors.0 }}
+                            </p>
+                        {% else %}
+                            <p class="mt-2 text-xs text-slate-400 flex items-center gap-1">
+                                <i data-lucide="info" class="h-3 w-3"></i>
+                                {{ form.account_holder_name.help_text }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Phone Number -->
+                    <div>
+                        <label for="{{ form.phone_number.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                            <i data-lucide="phone" class="h-4 w-4 text-teal-400"></i>
+                            {{ form.phone_number.label }}
+                        </label>
+                        {{ form.phone_number }}
+                        {% if form.phone_number.errors %}
+                            <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                                {{ form.phone_number.errors.0 }}
+                            </p>
+                        {% else %}
+                            <p class="mt-2 text-xs text-slate-400 flex items-center gap-1">
+                                <i data-lucide="info" class="h-3 w-3"></i>
+                                {{ form.phone_number.help_text }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Date of Birth -->
+                    <div>
+                        <label for="{{ form.date_of_birth.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                            <i data-lucide="calendar" class="h-4 w-4 text-teal-400"></i>
+                            {{ form.date_of_birth.label }}
+                        </label>
+                        {{ form.date_of_birth }}
+                        {% if form.date_of_birth.errors %}
+                            <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                                {{ form.date_of_birth.errors.0 }}
+                            </p>
+                        {% else %}
+                            <p class="mt-2 text-xs text-slate-400 flex items-center gap-1">
+                                <i data-lucide="info" class="h-3 w-3"></i>
+                                {{ form.date_of_birth.help_text }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Gender -->
+                    <div>
+                        <label for="{{ form.gender.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                            <i data-lucide="users" class="h-4 w-4 text-teal-400"></i>
+                            {{ form.gender.label }}
+                        </label>
+                        {{ form.gender }}
+                        {% if form.gender.errors %}
+                            <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                                {{ form.gender.errors.0 }}
+                            </p>
+                        {% else %}
+                            <p class="mt-2 text-xs text-slate-400 flex items-center gap-1">
+                                <i data-lucide="info" class="h-3 w-3"></i>
+                                {{ form.gender.help_text }}
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- KYC Documents Section -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2 text-white">
+                    <i data-lucide="file-text" class="h-6 w-6 text-teal-400"></i>
+                    KYC Documents
+                </h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- PAN Number -->
+                    <div>
+                        <label for="{{ form.pan_number.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                            <i data-lucide="credit-card" class="h-4 w-4 text-teal-400"></i>
+                            {{ form.pan_number.label }}
+                        </label>
+                        {{ form.pan_number }}
+                        {% if form.pan_number.errors %}
+                            <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                                {{ form.pan_number.errors.0 }}
+                            </p>
+                        {% else %}
+                            <p class="mt-2 text-xs text-slate-400 flex items-center gap-1">
+                                <i data-lucide="info" class="h-3 w-3"></i>
+                                {{ form.pan_number.help_text }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Aadhar Number -->
+                    <div>
+                        <label for="{{ form.aadhar_number.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                            <i data-lucide="id-card" class="h-4 w-4 text-teal-400"></i>
+                            {{ form.aadhar_number.label }}
+                        </label>
+                        {{ form.aadhar_number }}
+                        {% if form.aadhar_number.errors %}
+                            <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                                {{ form.aadhar_number.errors.0 }}
+                            </p>
+                        {% else %}
+                            <p class="mt-2 text-xs text-slate-400 flex items-center gap-1">
+                                <i data-lucide="info" class="h-3 w-3"></i>
+                                {{ form.aadhar_number.help_text }}
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Address Section -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2 text-white">
+                    <i data-lucide="map-pin" class="h-6 w-6 text-teal-400"></i>
+                    Residential Address
+                </h2>
+                
+                <div>
+                    <label for="{{ form.address.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                        <i data-lucide="home" class="h-4 w-4 text-teal-400"></i>
+                        {{ form.address.label }}
+                    </label>
+                    {{ form.address }}
+                    {% if form.address.errors %}
+                        <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                            <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                            {{ form.address.errors.0 }}
+                        </p>
+                    {% else %}
+                        <p class="mt-2 text-xs text-slate-400 flex items-center gap-1">
+                            <i data-lucide="info" class="h-3 w-3"></i>
+                            {{ form.address.help_text }}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="bg-teal-500/10 border border-teal-500/30 rounded-2xl p-6 mb-6">
+                <h3 class="font-semibold text-teal-300 mb-3 flex items-center gap-2">
+                    <i data-lucide="sparkles" class="h-5 w-5"></i>
+                    What happens next?
+                </h3>
+                <ul class="text-sm text-slate-300 space-y-2">
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="h-4 w-4 text-teal-400 mt-0.5"></i>
+                        <span>Your unique Customer ID and Account Number will be generated automatically</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="h-4 w-4 text-teal-400 mt-0.5"></i>
+                        <span>Your account will be activated immediately with a balance of ₹0.00</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="h-4 w-4 text-teal-400 mt-0.5"></i>
+                        <span>You can start adding money and making transactions right away</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="h-4 w-4 text-teal-400 mt-0.5"></i>
+                        <span>All your information is encrypted and stored securely</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <button type="submit" class="w-full px-8 py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-900 font-bold shadow-2xl shadow-teal-900/30 hover:shadow-teal-900/50 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2">
+                <i data-lucide="check-circle" class="h-6 w-6"></i>
+                Create My Account
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    input[type="text"],
+    input[type="date"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(20, 184, 166, 0.5);
+        box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+    }
+    input::placeholder,
+    textarea::placeholder {
+        color: rgb(148, 163, 184);
+    }
+    select {
+        cursor: pointer;
+    }
+    select option {
+        background: rgb(15, 23, 42);
+        color: white;
+    }
+    
+    /* Date input styling */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        cursor: pointer;
+    }
+</style>
+{% endblock %}

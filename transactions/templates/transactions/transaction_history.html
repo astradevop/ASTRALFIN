@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block title %}Transaction History - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-12">
+    <h1 class="text-4xl font-bold mb-8 flex items-center gap-3">
+        <i data-lucide="receipt" class="h-10 w-10 text-teal-400"></i>
+        Transaction History
+    </h1>
+    
+    <!-- Summary Cards -->
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="card-hover rounded-3xl bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent"></div>
+            <div class="relative">
+                <p class="text-sm opacity-90 mb-2 text-white flex items-center gap-2">
+                    <i data-lucide="wallet" class="h-4 w-4"></i>
+                    Current Balance
+                </p>
+                <p class="text-4xl font-bold text-white">₹{{ user.account.balance|floatformat:2 }}</p>
+            </div>
+        </div>
+        
+        <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-8 backdrop-blur-xl shadow-2xl">
+            <p class="text-sm text-slate-400 mb-2 flex items-center gap-2">
+                <i data-lucide="trending-up" class="h-4 w-4 text-emerald-400"></i>
+                Total Transactions
+            </p>
+            <p class="text-4xl font-bold text-white">{{ transactions.count }}</p>
+        </div>
+        
+        <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-8 backdrop-blur-xl shadow-2xl">
+            <p class="text-sm text-slate-400 mb-2 flex items-center gap-2">
+                <i data-lucide="calendar" class="h-4 w-4 text-cyan-400"></i>
+                Account Status
+            </p>
+            <p class="text-4xl font-bold text-white">
+                <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full {% if user.account.account_status == 'Active' %}bg-emerald-500/20 text-emerald-300 border border-emerald-400/30{% else %}bg-yellow-500/20 text-yellow-300 border border-yellow-400/30{% endif %}">
+                    <span class="h-2 w-2 rounded-full {% if user.account.account_status == 'Active' %}bg-emerald-400{% else %}bg-yellow-400{% endif %} animate-pulse"></span>
+                    {{ user.account.account_status }}
+                </span>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Search & Filter -->
+    {% if search_form %}
+    <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-6 backdrop-blur-xl shadow-2xl mb-6">
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+            <i data-lucide="search" class="h-5 w-5 text-teal-400"></i>
+            Search & Filter Transactions
+        </h2>
+        <form method="get" class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">{{ search_form.search.label }}</label>
+                {{ search_form.search }}
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">{{ search_form.transaction_type.label }}</label>
+                {{ search_form.transaction_type }}
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">{{ search_form.min_amount.label }}</label>
+                {{ search_form.min_amount }}
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">{{ search_form.max_amount.label }}</label>
+                {{ search_form.max_amount }}
+            </div>
+            <div class="md:col-span-2 lg:col-span-4 flex gap-3">
+                <button type="submit" class="px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-900 font-semibold hover:from-teal-400 hover:to-cyan-300 flex items-center gap-2">
+                    <i data-lucide="search" class="h-5 w-5"></i>
+                    Search
+                </button>
+                <a href="{% url 'transactions:transaction_history' %}" class="px-6 py-3 rounded-xl border border-white/20 hover:bg-white/5 text-white font-semibold flex items-center gap-2">
+                    <i data-lucide="x-circle" class="h-5 w-5"></i>
+                    Clear
+                </a>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+    
+    <!-- Transactions List -->
+    <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-8 backdrop-blur-xl shadow-2xl">
+        {% if transactions %}
+            <div class="space-y-4">
+                {% for transaction in transactions %}
+                    <div class="feature-card rounded-2xl p-6 group hover:border-teal-400/30 transition-all duration-300">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="h-14 w-14 rounded-2xl {% if transaction.to_account == user.account %}bg-gradient-to-br from-emerald-500 to-teal-400{% else %}bg-gradient-to-br from-orange-500 to-red-400{% endif %} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                    {% if transaction.to_account == user.account %}
+                                        <i data-lucide="arrow-down-circle" class="h-7 w-7"></i>
+                                    {% else %}
+                                        <i data-lucide="arrow-up-circle" class="h-7 w-7"></i>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-white text-lg">
+                                        {% if transaction.transaction_type == 'Deposit' %}
+                                            Money Added
+                                        {% elif transaction.to_account == user.account %}
+                                            Money Received
+                                        {% else %}
+                                            Money Sent
+                                        {% endif %}
+                                    </p>
+                                    <p class="text-sm text-slate-400">
+                                        {% if transaction.transaction_type == 'Deposit' %}
+                                            Self deposit
+                                        {% elif transaction.to_account == user.account %}
+                                            From: {{ transaction.from_account.account_holder_name }}
+                                        {% else %}
+                                            To: {{ transaction.to_account.account_holder_name }}
+                                        {% endif %}
+                                    </p>
+                                    <p class="text-xs text-slate-500 flex items-center gap-1 mt-1">
+                                        <i data-lucide="calendar" class="h-3 w-3"></i>
+                                        {{ transaction.timestamp|date:"d M, Y - h:i A" }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-2xl font-bold {% if transaction.to_account == user.account %}text-emerald-400{% else %}text-orange-400{% endif %}">
+                                    {% if transaction.to_account == user.account %}+{% else %}-{% endif %}₹{{ transaction.amount|floatformat:2 }}
+                                </p>
+                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs mt-2 {% if transaction.status == 'Success' %}bg-emerald-500/20 text-emerald-300 border border-emerald-400/30{% elif transaction.status == 'Pending' %}bg-yellow-500/20 text-yellow-300 border border-yellow-400/30{% else %}bg-red-500/20 text-red-300 border border-red-400/30{% endif %}">
+                                    <span class="h-1.5 w-1.5 rounded-full {% if transaction.status == 'Success' %}bg-emerald-400{% elif transaction.status == 'Pending' %}bg-yellow-400{% else %}bg-red-400{% endif %} animate-pulse"></span>
+                                    {{ transaction.status }}
+                                </span>
+                            </div>
+                        </div>
+                        {% if transaction.description %}
+                            <div class="mt-4 pt-4 border-t border-white/5">
+                                <p class="text-sm text-slate-400 flex items-center gap-2">
+                                    <i data-lucide="message-square" class="h-4 w-4"></i>
+                                    {{ transaction.description }}
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-12">
+                <div class="h-24 w-24 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-slate-400 shadow-xl">
+                    <i data-lucide="inbox" class="h-12 w-12"></i>
+                </div>
+                <h3 class="text-2xl font-semibold text-white mb-2">No Transactions Yet</h3>
+                <p class="text-slate-400 mb-6">Start by adding money to your account or making a transfer</p>
+                <div class="flex gap-4 justify-center">
+                    <a href="{% url 'transactions:add_money' %}" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-900 font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="h-5 w-5"></i>
+                        Add Money
+                    </a>
+                    <a href="{% url 'transactions:transfer_money' %}" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-2">
+                        <i data-lucide="send" class="h-5 w-5"></i>
+                        Transfer
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="mt-8 grid md:grid-cols-2 gap-4">
+        <a href="{% url 'transactions:statement' %}" class="group feature-card rounded-2xl p-6 transition-all duration-300 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-400 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i data-lucide="file-text" class="h-7 w-7"></i>
+                </div>
+                <div>
+                    <p class="font-semibold text-white text-lg">Get Detailed Statement</p>
+                    <p class="text-sm text-slate-400">Download or view full report</p>
+                </div>
+            </div>
+            <i data-lucide="chevron-right" class="h-6 w-6 text-slate-400 group-hover:text-teal-400 transition-colors"></i>
+        </a>
+        
+        <a href="{% url 'core:dashboard' %}" class="group feature-card rounded-2xl p-6 transition-all duration-300 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i data-lucide="home" class="h-7 w-7"></i>
+                </div>
+                <div>
+                    <p class="font-semibold text-white text-lg">Back to Dashboard</p>
+                    <p class="text-sm text-slate-400">Return to home</p>
+                </div>
+            </div>
+            <i data-lucide="chevron-right" class="h-6 w-6 text-slate-400 group-hover:text-teal-400 transition-colors"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}

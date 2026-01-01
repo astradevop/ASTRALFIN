@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto py-12">
+    <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-8 backdrop-blur-xl shadow-2xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="h-16 w-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-400 flex items-center justify-center text-white shadow-xl">
+                <i data-lucide="user-plus" class="h-8 w-8"></i>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Create Account</h1>
+            <p class="text-slate-400">Join ASTRALFIN today</p>
+        </div>
+        
+        <!-- OAuth Sign Up Option -->
+        <div class="mb-6">
+            <a href="{% url 'social:begin' 'auth0' %}" class="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-xl border border-white/10 hover:border-teal-500/50 hover:bg-teal-500/5 text-white font-medium transition-all duration-300">
+                <i data-lucide="fingerprint" class="h-5 w-5 text-teal-400"></i>
+                Sign up with Auth0
+            </a>
+        </div>
+        
+        <div class="relative mb-6">
+            <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-white/10"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+                <span class="px-2 bg-slate-900 text-slate-400">Or sign up with email</span>
+            </div>
+        </div>
+        
+        <!-- Form Sign Up -->
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            <div class="space-y-4">
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                            <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                            {{ form.username.errors.0 }}
+                        </p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                            <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                            {{ form.email.errors.0 }}
+                        </p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.phone_number.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">Phone Number (Optional)</label>
+                    {{ form.phone_number }}
+                    {% if form.phone_number.errors %}
+                        <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                            <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                            {{ form.phone_number.errors.0 }}
+                        </p>
+                    {% else %}
+                        <p class="mt-2 text-xs text-slate-400 flex items-center gap-1">
+                            <i data-lucide="info" class="h-3 w-3"></i>
+                            Used for money transfers
+                        </p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">Password</label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}
+                        <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                            <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                            {{ form.password1.errors.0 }}
+                        </p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">Confirm Password</label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                        <p class="mt-2 text-sm text-red-400 flex items-center gap-1">
+                            <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                            {{ form.password2.errors.0 }}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if form.non_field_errors %}
+                <div class="mt-4 bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                    {% for error in form.non_field_errors %}
+                        <p class="text-sm text-red-300 flex items-center gap-2">
+                            <i data-lucide="alert-triangle" class="h-4 w-4"></i>
+                            {{ error }}
+                        </p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <button type="submit" class="w-full mt-6 px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-900 font-bold shadow-xl hover:shadow-teal-900/50 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2">
+                <i data-lucide="user-plus" class="h-5 w-5"></i>
+                Create Account
+            </button>
+        </form>
+        
+        <p class="mt-6 text-center text-sm text-slate-400">
+            Already have an account? 
+            <a href="{% url 'accounts:login' %}" class="text-teal-400 hover:text-teal-300 font-medium">Login here</a>
+        </p>
+    </div>
+</div>
+
+<style>
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.75rem;
+        color: white;
+        transition: all 0.3s;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(20, 184, 166, 0.5);
+        box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+    }
+    input::placeholder {
+        color: rgb(148, 163, 184);
+    }
+</style>
+{% endblock %}

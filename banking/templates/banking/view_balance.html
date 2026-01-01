@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}View Balance - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-12">
+    <h1 class="text-4xl font-bold mb-8 flex items-center gap-3">
+        <i data-lucide="eye" class="h-10 w-10 text-teal-400"></i>
+        Account Balance
+    </h1>
+    
+    <!-- Main Balance Card -->
+    <div class="card-hover rounded-3xl bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 p-12 backdrop-blur-xl shadow-2xl mb-8 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent"></div>
+        <div class="relative">
+            <p class="text-lg opacity-90 mb-2 flex items-center justify-center gap-2 text-white">
+                <i data-lucide="wallet" class="h-5 w-5"></i>
+                Available Balance
+            </p>
+            <h2 class="text-7xl font-bold mb-4 text-white">₹{{ account.balance|floatformat:2 }}</h2>
+            <p class="text-sm opacity-90 text-white">Account: {{ account.account_number }}</p>
+        </div>
+    </div>
+    
+    <!-- Account Info Cards -->
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-6 backdrop-blur-xl shadow-2xl">
+            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-white">
+                <i data-lucide="user" class="h-5 w-5 text-teal-400"></i>
+                Account Details
+            </h3>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center pb-3 border-b border-white/5">
+                    <span class="text-slate-400">Account Holder</span>
+                    <span class="font-medium text-white">{{ account.account_holder_name }}</span>
+                </div>
+                <div class="flex justify-between items-center pb-3 border-b border-white/5">
+                    <span class="text-slate-400">Account Number</span>
+                    <span class="font-medium text-white">{{ account.account_number }}</span>
+                </div>
+                <div class="flex justify-between items-center pb-3 border-b border-white/5">
+                    <span class="text-slate-400">Customer ID</span>
+                    <span class="font-medium text-teal-400">{{ account.customer_id }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400">IFSC Code</span>
+                    <span class="font-medium text-cyan-400">{{ account.ifsc_code }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-6 backdrop-blur-xl shadow-2xl">
+            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-white">
+                <i data-lucide="activity" class="h-5 w-5 text-teal-400"></i>
+                Account Status
+            </h3>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center pb-3 border-b border-white/5">
+                    <span class="text-slate-400">Status</span>
+                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm {% if account.account_status == 'Active' %}bg-emerald-500/20 text-emerald-300 border border-emerald-400/30{% else %}bg-yellow-500/20 text-yellow-300 border border-yellow-400/30{% endif %}">
+                        <span class="h-2 w-2 rounded-full {% if account.account_status == 'Active' %}bg-emerald-400{% else %}bg-yellow-400{% endif %} animate-pulse"></span>
+                        {{ account.account_status }}
+                    </span>
+                </div>
+                <div class="flex justify-between items-center pb-3 border-b border-white/5">
+                    <span class="text-slate-400">Opened Date</span>
+                    <span class="font-medium text-white">{{ account.opened_date|date:"d M, Y" }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400">Available Balance</span>
+                    <span class="font-bold text-2xl text-teal-400">₹{{ account.balance|floatformat:2 }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="card-hover rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-800/80 border border-white/20 p-8 backdrop-blur-xl shadow-2xl">
+        <h3 class="text-xl font-semibold mb-6 flex items-center gap-2 text-white">
+            <i data-lucide="zap" class="h-6 w-6 text-teal-400"></i>
+            Quick Actions
+        </h3>
+        <div class="grid md:grid-cols-3 gap-4">
+            <a href="{% url 'transactions:add_money' %}" class="group feature-card rounded-2xl p-6 text-center transition-all duration-300">
+                <div class="h-16 w-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform duration-300">
+                    <i data-lucide="plus-circle" class="h-8 w-8"></i>
+                </div>
+                <span class="font-semibold text-white group-hover:text-emerald-300 transition-colors">Add Money</span>
+            </a>
+            
+            <a href="{% url 'transactions:transfer_money' %}" class="group feature-card rounded-2xl p-6 text-center transition-all duration-300">
+                <div class="h-16 w-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform duration-300">
+                    <i data-lucide="send" class="h-8 w-8"></i>
+                </div>
+                <span class="font-semibold text-white group-hover:text-cyan-300 transition-colors">Transfer Money</span>
+            </a>
+            
+            <a href="{% url 'transactions:transaction_history' %}" class="group feature-card rounded-2xl p-6 text-center transition-all duration-300">
+                <div class="h-16 w-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-400 flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform duration-300">
+                    <i data-lucide="receipt" class="h-8 w-8"></i>
+                </div>
+                <span class="font-semibold text-white group-hover:text-purple-300 transition-colors">View History</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

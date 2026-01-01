@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Server Error - ASTRALFIN{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center">
+    <div class="text-center max-w-2xl mx-auto px-4">
+        <!-- Error Icon -->
+        <div class="h-32 w-32 mx-auto mb-8 rounded-3xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-orange-500/30 flex items-center justify-center">
+            <i data-lucide="server-crash" class="h-16 w-16 text-orange-400"></i>
+        </div>
+        
+        <!-- Error Code -->
+        <h1 class="text-8xl font-black mb-4 bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+            500
+        </h1>
+        
+        <!-- Error Message -->
+        <h2 class="text-3xl font-bold mb-4">Internal Server Error</h2>
+        <p class="text-slate-400 text-lg mb-8 leading-relaxed">
+            Something went wrong on our end. Our team has been notified and we're working on fixing it.
+        </p>
+        
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'core:index' %}" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-900 font-bold shadow-2xl shadow-teal-900/30 hover:shadow-teal-900/50 transition-all duration-300 transform hover:scale-105">
+                <i data-lucide="home" class="h-5 w-5"></i>
+                Go Home
+            </a>
+            
+            <button onclick="location.reload()" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl border border-slate-700/70 hover:border-teal-500/50 hover:bg-teal-500/5 text-white font-semibold transition-all duration-300">
+                <i data-lucide="refresh-cw" class="h-5 w-5"></i>
+                Try Again
+            </button>
+        </div>
+        
+        <!-- Help Section -->
+        <div class="mt-12 p-6 rounded-2xl bg-orange-500/10 border border-orange-500/30">
+            <h3 class="font-semibold mb-3 text-orange-300 flex items-center justify-center gap-2">
+                <i data-lucide="help-circle" class="h-5 w-5"></i>
+                Need Help?
+            </h3>
+            <p class="text-sm text-slate-300 mb-4">
+                If this problem persists, please contact our support team with the following information:
+            </p>
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-black/20 text-slate-300 text-sm font-mono">
+                <i data-lucide="clock" class="h-4 w-4"></i>
+                Error Time: <span id="errorTime"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Display error timestamp
+    document.getElementById('errorTime').textContent = new Date().toLocaleString();
+</script>
+{% endblock %}
+
+
+
+
