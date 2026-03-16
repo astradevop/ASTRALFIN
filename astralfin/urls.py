@@ -9,5 +9,4 @@ urlpatterns = [
     path('transactions/', include('transactions.urls')),
     path('loans/', include('loans.urls')),
     path('investments/', include('investments.urls')),
-    path('oauth/', include('social_django.urls', namespace='social')),
 ]
