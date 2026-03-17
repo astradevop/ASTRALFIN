@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='account',
             name='email_verified',
-            field=models.BooleanField(default=False, help_text='Whether email is verified via Auth0'),
+            field=models.BooleanField(default=False, help_text='Whether email is verified'),
         ),
     ]

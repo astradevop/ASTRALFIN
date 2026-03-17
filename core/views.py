@@ -2,17 +2,10 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 def index(request):
-    """
-    Landing page view - shows information about ASTRALFIN
-    """
     return render(request, 'core/index.html')
 
 @login_required
 def dashboard(request):
-    """
-    Dashboard view for logged-in users
-    Shows account summary and quick actions
-    """
     context = {
         'user': request.user,
     }

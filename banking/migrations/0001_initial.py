@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('customer_id', models.CharField(default=banking.models.generate_customer_id, help_text='5-digit unique customer ID', max_length=5, unique=True)),
                 ('account_number', models.CharField(default=banking.models.generate_account_number, help_text='10-digit unique account number', max_length=10, unique=True)),
-                ('ifsc_code', models.CharField(default='NEOBANKX', help_text='IFSC code for the bank', max_length=11)),
+                ('ifsc_code', models.CharField(default='DIGIBANKING', help_text='IFSC code for the bank', max_length=11)),
                 ('account_holder_name', models.CharField(help_text='Full name of account holder', max_length=255)),
                 ('balance', models.DecimalField(decimal_places=2, default=0.0, help_text='Current account balance', max_digits=12)),
                 ('account_status', models.CharField(choices=[('Active', 'Active'), ('Inactive', 'Inactive'), ('Frozen', 'Frozen')], default='Active', help_text='Current status of the account', max_length=10)),

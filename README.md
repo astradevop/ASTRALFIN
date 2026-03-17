@@ -1,10 +1,10 @@
 # ASTRALFIN
 
-ASTRALFIN is a comprehensive neo-banking platform built with Django, designed to simulate core banking operations including account management, funds transfer, loans, and investment portfolio tracking.
+ASTRALFIN is a comprehensive Digi-Banking platform built with Django, designed to simulate core banking operations including account management, funds transfer, loans, and investment portfolio tracking.
 
 ## Features
 
-- **Digital Banking**: Create accounts with generated customer IDs and account numbers (IFSC: NEOBANKX).
+- **Digital Banking**: Create accounts with generated customer IDs and account numbers (IFSC: DIGIBANKING).
 - **Funds Transfer**: Secure money transfer via mobile number or account details (NEFT/IMPS simulation).
 - **Transaction History**: Detailed tabular statements with debit/credit tracking and PDF export.
 - **Loan Management**: End-to-end loan application workflow with automated EMI scheduling, manual payments, and pre-closure options.
@@ -16,17 +16,26 @@ ASTRALFIN is a comprehensive neo-banking platform built with Django, designed to
 
 ## Tech Stack
 
-- **Backend**: Python 3.12, Django 5.2
-- **Database**: PostgreSQL
+- **Backend**: Python 3.12, Django 5.2.x
+- **Database**: PostgreSQL (Supabase compatible)
 - **Frontend**: HTML5, Tailwind CSS
-- **Authentication**: Custom Auth & Auth0 integration
+- **Authentication**: Custom Auth (Django) & Session-based Security
 - **Reporting**: ReportLab for PDF generation
+
+## Project Structure
+
+- `accounts/`: User management and primary authentication.
+- `banking/`: Bank account creation, profile updates, and phone verification.
+- `core/`: Landing page and unified dashboard.
+- `investments/`: Investment portfolio and transaction tracking.
+- `loans/`: Loan application, EMI calculation, and payment management.
+- `transactions/`: Funds transfer logic, transaction ledger, and PDF statement generation.
 
 ## Local Setup
 
 1. **Clone the repository**
    ```bash
-   git clone <repository_url>
+   git clone https://github.com/astradevop/ASTRALFIN.git
    cd ASTRALFIN
    ```
 
@@ -50,6 +59,7 @@ ASTRALFIN is a comprehensive neo-banking platform built with Django, designed to
    SECRET_KEY=your_secret_key
    DEBUG=True
    ALLOWED_HOSTS=localhost,127.0.0.1
+   CSRF_TRUSTED_ORIGINS=http://localhost:8000
    
    # Database
    DB_NAME=your_db_name
@@ -57,11 +67,6 @@ ASTRALFIN is a comprehensive neo-banking platform built with Django, designed to
    DB_PASSWORD=your_db_password
    DB_HOST=localhost
    DB_PORT=5432
-   
-   # Auth0 (Optional for local dev if disabled)
-   AUTH0_DOMAIN=...
-   AUTH0_CLIENT_ID=...
-   AUTH0_CLIENT_SECRET=...
    ```
 
 5. **Run Migrations & Server**

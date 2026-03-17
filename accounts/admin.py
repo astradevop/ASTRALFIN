@@ -4,9 +4,7 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    """
-    Admin interface for custom User model
-    """
+    
     list_display = ('username', 'email', 'phone_number', 'is_account_created', 'is_staff', 'date_joined')
     list_filter = ('is_account_created', 'is_staff', 'is_superuser', 'is_active')
     search_fields = ('username', 'email', 'phone_number')

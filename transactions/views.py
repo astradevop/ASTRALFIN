@@ -366,7 +366,7 @@ def generate_statement_pdf(request):
     normal_style = styles['Normal']
     
     # Add bank logo/name
-    bank_name = Paragraph('<b>ASTRALFIN</b> Neo Bank', title_style)
+    bank_name = Paragraph('<b>ASTRALFIN</b> Digi-Banking', title_style)
     elements.append(bank_name)
     elements.append(Spacer(1, 12))
     

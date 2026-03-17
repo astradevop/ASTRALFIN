@@ -84,42 +84,12 @@ def send_verification_code(request):
     account.phone_verification_sent_at = timezone.now()
     account.save()
     
-    try:
-        auth0_domain = settings.SOCIAL_AUTH_AUTH0_DOMAIN
-        client_id = settings.SOCIAL_AUTH_AUTH0_KEY
-        client_secret = settings.SOCIAL_AUTH_AUTH0_SECRET
-        
-        sms_url = f'https://{auth0_domain}/passwordless/start'
-        sms_payload = {
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'connection': 'sms',
-            'phone_number': phone,
-            'send': 'code'
-        }
-        
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        
-        sms_response = requests.post(sms_url, json=sms_payload, headers=headers)
-        
-        if sms_response.status_code in [200, 201]:
-            messages.success(request, f'✅ Verification code sent to {account.phone_number} via SMS')
-        else:
-            # Log the error for debugging
-            error_data = sms_response.json() if sms_response.text else {}
-            error_message = error_data.get('error_description', error_data.get('message', sms_response.text))
-            
-            # Fallback: Show code if SMS fails
-            messages.warning(request, f'SMS service unavailable. Your verification code is: {verification_code}')
-            messages.error(request, f'Auth0 Error: {error_message}')
-            messages.info(request, f'Status Code: {sms_response.status_code}')
-            
-    except Exception as e:
-        # Fallback: Show code if any error occurs
-        messages.warning(request, f'SMS service unavailable. Your verification code is: {verification_code}')
-        messages.error(request, f'Error: {str(e)}')
+    # SIMULATION: In a real app, you would integrate with an SMS gateway
+    # Since we are removing Auth0, we will just show the code in a message for the user
+    messages.info(request, f'Verification code generated for {phone}')
+    messages.warning(request, f'SIMULATED SMS: Your verification code is {verification_code}')
+    
+    return redirect('banking:verify_phone_form')
     
     return redirect('banking:verify_phone_form')
 
@@ -168,48 +138,16 @@ def verify_phone(request):
         if not phone.startswith('+'):
             phone = '+91' + phone  # Default to India (+91)
         
-        # Verify code with Auth0
-        try:
-            auth0_domain = settings.SOCIAL_AUTH_AUTH0_DOMAIN
-            client_id = settings.SOCIAL_AUTH_AUTH0_KEY
-            client_secret = settings.SOCIAL_AUTH_AUTH0_SECRET
-            
-            # Call Auth0's token endpoint to verify the OTP
-            verify_url = f'https://{auth0_domain}/oauth/token'
-            verify_payload = {
-                'grant_type': 'http://auth0.com/oauth/grant-type/passwordless/otp',
-                'client_id': client_id,
-                'client_secret': client_secret,
-                'username': phone,
-                'otp': code,
-                'realm': 'sms',
-                'scope': 'openid profile email'
-            }
-            
-            headers = {
-                'Content-Type': 'application/json'
-            }
-            
-            verify_response = requests.post(verify_url, json=verify_payload, headers=headers)
-            
-            if verify_response.status_code == 200:
-                # Code is valid!
-                account.phone_verified = True
-                account.phone_verification_code = None
-                account.phone_verification_sent_at = None
-                account.save()
-                messages.success(request, '✅ Phone number verified successfully!')
-                return redirect('banking:account_details')
-            else:
-                # Invalid code or other error
-                error_data = verify_response.json() if verify_response.text else {}
-                error_description = error_data.get('error_description', 'Invalid verification code')
-                
-                messages.error(request, f'❌ {error_description}')
-                return redirect('banking:verify_phone_form')
-                
-        except Exception as e:
-            messages.error(request, f'❌ Verification failed: {str(e)}')
+        # Verify code locally (Auth0 removed)
+        if code == account.phone_verification_code:
+            account.phone_verified = True
+            account.phone_verification_code = None
+            account.phone_verification_sent_at = None
+            account.save()
+            messages.success(request, '✅ Phone number verified successfully!')
+            return redirect('banking:account_details')
+        else:
+            messages.error(request, '❌ Invalid verification code. Please try again.')
             return redirect('banking:verify_phone_form')
     
     return redirect('banking:account_details')

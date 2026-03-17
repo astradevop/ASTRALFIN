@@ -54,7 +54,7 @@ class Account(models.Model):
     )
     ifsc_code = models.CharField(
         max_length=11,
-        default='NEOBANKX',
+        default='DIGIBANKING',
         help_text="IFSC code for the bank"
     )
     account_holder_name = models.CharField(
